@@ -48,7 +48,7 @@ function SWEP:DoPrimaryAttack()
 		local tr = self:RunTrace()
 
 		if tr.Hit then
-			fg_base.ForEntitiesInRadius(tr.HitPos, 50, self.IgniteCallback)
+			fg_base.ForEntitiesInRadius(tr.HitPos, 50, self.IgniteCallback, self:GetOwner())
 		end
 	end
 
