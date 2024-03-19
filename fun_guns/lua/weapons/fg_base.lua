@@ -164,6 +164,43 @@ function SWEP:SetUsesSecondaryAmmo(state)
 	self.UsesSecondaryAmmo = tobool(state)
 end
 
+function SWEP:TakeAmmo(amount, ammo_type)
+	local owner = self:GetOwner()
+	if not IsValid(owner) then return end
+
+	ammo_type = tonumber(ammo_type) or -1
+
+	local take_function = self:ReturnFireMode(self.TakePrimaryAmmo, self.TakeSecondaryAmmo)
+
+	if not isfunction(take_function) then
+		take_function = self:ReturnAmmoType(ammo_type, self.TakePrimaryAmmo, self.TakeSecondaryAmmo)
+
+		if not isfunction(take_function) then
+			return
+		end
+	end
+
+	amount = tonumber(amount) or 0
+
+	if owner:IsPlayer() and amount < 0 then
+		ammo_type = ammo_type or self:GetCurrentAmmoType()
+		local magazine = self:GetReserveAmmo(ammo_type)
+
+		if magazine > 0 then
+			local fixed_amount = math.abs(amount)
+
+			fixed_amount = math.min(fixed_amount, magazine)
+			magazine = magazine - fixed_amount
+
+			owner:SetAmmo(magazine, ammo_type)
+		else
+			return
+		end
+	end
+
+	take_function(self, amount)
+end
+
 function SWEP:GetReserveAmmo(ammo_type)
 	local owner = self:GetOwner()
 	if not IsValid(owner) or not owner:IsPlayer() then
