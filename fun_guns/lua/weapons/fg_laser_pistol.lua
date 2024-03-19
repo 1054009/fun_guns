@@ -8,6 +8,14 @@ function SWEP:PostInitialize()
 	self:SetHoldType("pistol")
 end
 
+function SWEP.IgniteCallback(target)
+	if target:IsWeapon() then return end -- Don't engulf them
+	if isnumber(target:ViewModelIndex()) then return end
+	if target:GetClass() == "gmod_hands" then return end
+
+	target:Ignite(5, 30)
+end
+
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 
@@ -22,6 +30,10 @@ function SWEP:PrimaryAttack()
 		effect_data:SetOrigin(tr.HitPos)
 
 		util.Effect("laser", effect_data)
+
+		if SERVER then
+			fg_base.ForEntitiesInRadius(tr.HitPos, 50, self.IgniteCallback)
+		end
 	end
 
 	self:FireBullet(nil, nil, vector_origin, 1234)
