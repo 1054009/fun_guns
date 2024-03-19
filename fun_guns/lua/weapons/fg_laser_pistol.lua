@@ -37,7 +37,7 @@ end
 
 function SWEP.IgniteCallback(target)
 	if target:IsWeapon() then return end -- Don't engulf them
-	if isnumber(target:ViewModelIndex()) then return end
+	if not target:ViewModelIndex() then return end
 	if target:GetClass() == "gmod_hands" then return end
 
 	target:Ignite(5, 30)
