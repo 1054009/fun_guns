@@ -4,6 +4,8 @@ local base_class = fg_base.SetupSWEP(SWEP, "Laser SMG")
 
 SWEP.ViewModel = "models/weapons/v_smg1.mdl"
 
+SWEP.WorldModel = "models/weapons/w_smg1.mdl"
+
 SWEP.Primary.Ammo = "SMG1"
 
 SWEP.Primary.ClipSize = 45

@@ -24,6 +24,8 @@ SWEP.ViewModel = "models/weapons/v_pistol.mdl"
 
 SWEP.ViewModelFOV = 62
 
+SWEP.WorldModel = "models/weapons/w_pistol.mdl"
+
 SWEP.Slot = 0
 
 if not istable(SWEP.Primary) then
