@@ -74,6 +74,8 @@ function SWEP:DoReload()
 		return self:FinishReload()
 	end
 
+	owner:SetAnimation(PLAYER_RELOAD)
+
 	if self:GetReserveAmmo(self:GetPrimaryAmmoType()) <= 0 or self:Clip1() >= self:GetMaxClip1() then
 		return self:FinishReload()
 	end
