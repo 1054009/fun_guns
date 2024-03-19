@@ -50,6 +50,10 @@ function SWEP:SetAttackState(state)
 	self.AttackSate = tonumber(state) or fg_base.ATTACK_STATE_FINISHED
 end
 
+function SWEP:CanReload()
+	return self:GetAttackState() == fg_base.ATTACK_STATE_FINISHED
+end
+
 function SWEP:DoSecondaryAttack()
 	if self:GetAttackState() ~= fg_base.ATTACK_STATE_FINISHED then return end
 
