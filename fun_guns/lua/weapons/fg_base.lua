@@ -317,6 +317,28 @@ function SWEP:DoSecondaryAttack()
 	return false
 end
 
+function SWEP:CanReload()
+	return true
+end
+
+function SWEP:Reload()
+	if not IsFirstTimePredicted() then return end -- CanReload is for override
+	if not self:CanReload() then return end
+
+	local owner = self:GetOwner()
+	if IsValid(owner) then
+		owner:SetAnimation(PLAYER_RELOAD)
+	end
+
+	self:SendWeaponAnim(ACT_VM_RELOAD)
+
+	self:DoReload()
+end
+
+function SWEP:DoReload()
+
+end
+
 function SWEP:GetCurrentFireMode()
 	if self.m_bInPrimaryAttack then
 		return fg_base.FIRE_MODE_PRIMARY
