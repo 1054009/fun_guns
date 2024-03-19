@@ -16,7 +16,7 @@ SWEP.Primary.BulletCount = 7
 
 SWEP.Primary.Damage = 1234
 
-SWEP.Primary.Spread = 0.5
+SWEP.Primary.Spread = 0.2
 
 SWEP.Primary.VerticalViewPunch = 12
 
