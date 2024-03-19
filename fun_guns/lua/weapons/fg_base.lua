@@ -124,6 +124,14 @@ function SWEP:PostInitialize()
 
 end
 
+function SWEP:Think()
+	self:OnThink()
+end
+
+function SWEP:OnThink()
+
+end
+
 function SWEP:OnRemove()
 
 end
