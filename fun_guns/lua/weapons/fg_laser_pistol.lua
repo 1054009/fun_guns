@@ -10,6 +10,10 @@ SWEP.Primary.Damage = 50
 
 SWEP.Primary.Spread = 0.1
 
+SWEP.Primary.VerticalViewPunch = 6
+
+SWEP.Primary.HorizontalViewPunch = { -5, 5 }
+
 SWEP.PrimaryFireInterval = 0.2
 
 function SWEP:PostEntityFireBullets(entity, data)
@@ -48,17 +52,23 @@ function SWEP.IgniteCallback(target)
 end
 
 function SWEP:DoPrimaryAttack()
+	local owner = self:GetOwner()
+
 	if SERVER then
 		local tr = self:RunTrace()
 
 		if tr.Hit then
-			fg_base.ForEntitiesInRadius(tr.HitPos, 50, self.IgniteCallback, self:GetOwner())
+			fg_base.ForEntitiesInRadius(tr.HitPos, 50, self.IgniteCallback, owner)
 		end
 	end
 
 	self:FireBullet()
 	self:TakePrimaryAmmo(1)
 	self:SetNextPrimaryFire(self:GetNextPrimaryFireTime())
+
+	if IsValid(owner) and owner:IsPlayer() then
+		owner:ViewPunch(self:CalculateViewPunch())
+	end
 
 	return true
 end

@@ -18,6 +18,10 @@ SWEP.Primary.Damage = 80
 
 SWEP.Primary.Spread = 0.2
 
+SWEP.Primary.VerticalViewPunch = 2
+
+SWEP.Primary.HorizontalViewPunch = { -1, 1 }
+
 SWEP.PrimaryFireInterval = 0.1
 
 function SWEP:PostInitialize()

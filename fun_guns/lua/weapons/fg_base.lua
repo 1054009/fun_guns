@@ -44,6 +44,10 @@ SWEP.Primary.Damage = 1
 
 SWEP.Primary.Spread = 1
 
+SWEP.Primary.VerticalViewPunch = 1
+
+SWEP.Primary.HorizontalViewPunch = 1
+
 if not istable(SWEP.Secondary) then
 	SWEP.Secondary = {}
 end
@@ -59,6 +63,10 @@ SWEP.Secondary.Automatic = false
 SWEP.Secondary.Damage = 1
 
 SWEP.Secondary.Spread = 1
+
+SWEP.Secondary.VerticalViewPunch = 1
+
+SWEP.Secondary.HorizontalViewPunch = 1
 
 SWEP.UseHands = true
 
@@ -341,6 +349,28 @@ function SWEP:FireBullet(amount, direction, spread, damage, ammo_type)
 	owner:LagCompensation(true)
 		owner:FireBullets(bullet)
 	owner:LagCompensation(false)
+end
+
+function SWEP:UnpackPunch(punch)
+	if isnumber(punch) then
+		return punch
+	elseif istable(punch) and isnumber(punch[1]) and isnumber(punch[2]) then
+		return math.Rand(punch[1], punch[2])
+	else
+		return tonumber(punch) or 0
+	end
+end
+
+function SWEP:CalculateViewPunch()
+	local fire_table = self:GetCurrentFireTable()
+	if not istable(fire_table) then
+		return Angle()
+	end
+
+	local vertical_punch = self:UnpackPunch(fire_table.VerticalViewPunch)
+	local horizontal_punch = self:UnpackPunch(fire_table.HorizontalViewPunch)
+
+	return Angle(-vertical_punch, horizontal_punch)
 end
 
 --[[
