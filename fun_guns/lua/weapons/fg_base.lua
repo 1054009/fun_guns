@@ -40,6 +40,8 @@ SWEP.Primary.DefaultClip = 10
 
 SWEP.Primary.Automatic = false
 
+SWEP.Primary.BulletCount = 1
+
 SWEP.Primary.Damage = 1
 
 SWEP.Primary.Spread = 1
@@ -59,6 +61,8 @@ SWEP.Secondary.ClipSize = 0
 SWEP.Secondary.DefaultClip = 0
 
 SWEP.Secondary.Automatic = false
+
+SWEP.Secondary.BulletCount = 1
 
 SWEP.Secondary.Damage = 1
 
@@ -305,16 +309,15 @@ function SWEP:GetSpreadSeed()
 	return self.m_iSpreadSeed
 end
 
-function SWEP:RandomBulletSpread(fire_table)
+function SWEP:RandomBulletSpread(bullet_index)
+	local fire_table = self:GetCurrentFireTable()
 	if not istable(fire_table) then
-		fire_table = self:GetCurrentFireTable()
-
-		if not istable(fire_table) then
-			return Vector()
-		end
+		return Vector()
 	end
 
-	math.randomseed(UnPredictedCurTime() + self:GetSpreadSeed())
+	bullet_index = tonumber(bullet_index) or 0
+
+	math.randomseed(SysTime() + self:GetSpreadSeed() + bullet_index)
 
 	local x = math.Rand(0, fire_table.Spread)
 	local y = math.Rand(0, fire_table.Spread)
@@ -322,7 +325,7 @@ function SWEP:RandomBulletSpread(fire_table)
 	return Vector(x, y)
 end
 
-function SWEP:FireBullet(amount, direction, spread, damage, ammo_type)
+function SWEP:FireBullet(amount, direction, damage, ammo_type)
 	local owner = self:GetOwner()
 	if not IsValid(owner) then
 		error("Tried to shoot with no owner!")
@@ -335,20 +338,24 @@ function SWEP:FireBullet(amount, direction, spread, damage, ammo_type)
 		return
 	end
 
-	local bullet = self.Bullet
+	amount = tonumber(amount) or fire_table.BulletCount
 
-	bullet.Num = tonumber(amount) or 1
+	local bullet = self.Bullet
+	bullet.Num = 1
 	bullet.Src = owner:EyePos()
 	bullet.Dir = isvector(direction) and direction or owner:GetForward()
-	bullet.Spread = isvector(spread) and spread or self:RandomBulletSpread()
 	bullet.Damage = tonumber(damage) or fire_table.Damage
 	bullet.Force = bullet.Damage * 0.5
 	bullet.AmmoType = isnumber(ammo_type) and ammo_type or self:GetCurrentAmmoType()
 	bullet.IgnoreEntity = owner
 
-	owner:LagCompensation(true)
-		owner:FireBullets(bullet)
-	owner:LagCompensation(false)
+	for i = 1, amount do
+		bullet.Spread = self:RandomBulletSpread(i)
+
+		owner:LagCompensation(true)
+			owner:FireBullets(bullet)
+		owner:LagCompensation(false)
+	end
 end
 
 function SWEP:UnpackPunch(punch)
