@@ -336,7 +336,7 @@ function SWEP:Reload()
 end
 
 function SWEP:DoReload()
-
+	baseclass.Get("weapon_base").Reload(self)
 end
 
 function SWEP:GetCurrentFireMode()
