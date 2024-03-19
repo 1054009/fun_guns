@@ -16,9 +16,7 @@ function SWEP.IgniteCallback(target)
 	target:Ignite(5, 30)
 end
 
-function SWEP:PrimaryAttack()
-	if not self:CanPrimaryAttack() then return end
-
+function SWEP:DoPrimaryAttack()
 	local tr = self:RunTrace()
 
 	if tr.Hit then
@@ -39,4 +37,6 @@ function SWEP:PrimaryAttack()
 	self:FireBullet(nil, nil, vector_origin, 1234)
 	self:TakePrimaryAmmo(1)
 	self:SetNextPrimaryFire(self:GetNextPrimaryFireTime())
+
+	return true
 end
