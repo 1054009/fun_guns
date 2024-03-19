@@ -245,3 +245,13 @@ function fg_base.SetupSWEP(swep, name)
 
 	return baseclass.Get("fg_base")
 end
+
+function fg_base.ForEntitiesInRadius(origin, radius, callback)
+	local entities = ents.FindInSphere(origin, radius)
+
+	for i = 1, #entities do
+		if IsValid(entities[i]) then
+			callback(entities[i])
+		end
+	end
+end
