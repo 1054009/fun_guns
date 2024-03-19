@@ -381,6 +381,12 @@ fg_base = istable(fg_base) and fg_base or {}
 
 fg_base.IsSinglePlayer = game.SinglePlayer()
 
+fg_base.DontIgniteClasses = {
+	["gmod_hands"] = true,
+	["predicted_viewmodel"] = true,
+	["viewmodel"] = true
+}
+
 function fg_base.SetupSWEP(swep, name)
 	swep.Category = "Fun Guns"
 
@@ -411,4 +417,13 @@ function fg_base.ForEntitiesInRadius(origin, radius, callback, ...)
 
 		callback(entities[i])
 	end
+end
+
+function fg_base.CanIgniteEntity(entity)
+	if not IsValid(entity) then return false end
+
+	if entity:IsWeapon() then return false end
+	if fg_base.DontIgniteClasses[entity:GetClass()] then return false end
+
+	return true
 end

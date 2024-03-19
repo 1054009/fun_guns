@@ -44,9 +44,7 @@ function SWEP:PostInitialize()
 end
 
 function SWEP.IgniteCallback(target)
-	if target:IsWeapon() then return end -- Don't engulf them
-	if not target:ViewModelIndex() then return end
-	if target:GetClass() == "gmod_hands" then return end
+	if not fg_base.CanIgniteEntity(target) then return end
 
 	target:Ignite(5, 30)
 end
