@@ -362,12 +362,24 @@ function fg_base.SetupSWEP(swep, name)
 	return baseclass.Get(swep.Base)
 end
 
-function fg_base.ForEntitiesInRadius(origin, radius, callback)
+function fg_base.ForEntitiesInRadius(origin, radius, callback, ...)
+	local excluded_ents = select("#", ...)
+
+	if excluded_ents > 0 then -- Setup excluded table
+		local excluded_amount = excluded_ents
+		excluded_ents = {}
+
+		for i = 1, excluded_amount do
+			excluded_ents[select(i, ...)] = true
+		end
+	end
+
 	local entities = ents.FindInSphere(origin, radius)
 
 	for i = 1, #entities do
-		if IsValid(entities[i]) then
-			callback(entities[i])
-		end
+		if excluded_ents and excluded_ents[entities[i]] then continue end
+		if not IsValid(entities[i]) then continue end
+
+		callback(entities[i])
 	end
 end
