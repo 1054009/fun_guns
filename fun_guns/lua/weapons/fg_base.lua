@@ -125,11 +125,11 @@ function SWEP:PostInitialize()
 end
 
 function SWEP:Think()
-	self:OnThink()
+	return self:OnThink()
 end
 
 function SWEP:OnThink()
-
+	return false
 end
 
 function SWEP:OnRemove()
