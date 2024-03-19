@@ -38,17 +38,21 @@ SWEP.Primary.DefaultClip = 10
 
 SWEP.Primary.Automatic = false
 
+SWEP.Primary.Damage = 1
+
 if not istable(SWEP.Secondary) then
 	SWEP.Secondary = {}
 end
 
-SWEP.Secondary.Ammo = "Pistol"
+SWEP.Secondary.Ammo = ""
 
 SWEP.Secondary.ClipSize = 0
 
 SWEP.Secondary.DefaultClip = 0
 
 SWEP.Secondary.Automatic = false
+
+SWEP.Secondary.Damage = 1
 
 SWEP.DisableDuplicator = false
 
@@ -160,11 +164,49 @@ function SWEP:CanSecondaryAttack()
 end
 
 function SWEP:PrimaryAttack()
+	if not self:CanPrimaryAttack() then return end
 
+	if fg_base.IsSinglePlayer then
+		self:CallOnClient("PrimaryAttack")
+	end
+
+	self.m_bInPrimaryAttack = true
+		if self:DoPrimaryAttack() then
+			self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+		end
+	self.m_bInPrimaryAttack = false
+end
+
+function SWEP:DoPrimaryAttack()
+	return false
 end
 
 function SWEP:SecondaryAttack()
+	if not self:CanSecondaryAttack() then return end
 
+	if fg_base.IsSinglePlayer then
+		self:CallOnClient("SecondaryAttack")
+	end
+
+	self.m_bInSecondaryAttack = true
+		if self:DoSecondaryAttack() then
+			self:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
+		end
+	self.m_bInSecondaryAttack = false
+end
+
+function SWEP:DoSecondaryAttack()
+	return false
+end
+
+function SWEP:GetCurrentAmmoType()
+	if self.m_bInPrimaryAttack then
+		return self:GetPrimaryAmmoType()
+	elseif self.m_bInSecondaryAttack then
+		return self:GetSecondaryAmmoType()
+	else
+		return -1
+	end
 end
 
 function SWEP:EmptyTraceFilter() -- Faster than table.Empty
@@ -220,9 +262,9 @@ function SWEP:FireBullet(amount, direction, spread, damage, ammo_type)
 	bullet.Src = owner:EyePos()
 	bullet.Dir = isvector(direction) and direction or owner:GetForward()
 	bullet.Spread = isvector(spread) and spread or self:RandomBulletSpread()
-	bullet.Damage = tonumber(damage) or 10
+	bullet.Damage = tonumber(damage) or self.Primary.Damage
 	bullet.Force = bullet.Damage * 0.5
-	bullet.AmmoType = isnumber(ammo_type) and ammo_type or self:GetPrimaryAmmoType()
+	bullet.AmmoType = isnumber(ammo_type) and ammo_type or self:GetCurrentAmmoType()
 	bullet.IgnoreEntity = owner
 
 	owner:LagCompensation(true)
@@ -235,6 +277,8 @@ end
 ]]
 
 fg_base = istable(fg_base) and fg_base or {}
+
+fg_base.IsSinglePlayer = game.SinglePlayer()
 
 function fg_base.SetupSWEP(swep, name)
 	swep.Category = "Fun Guns"
