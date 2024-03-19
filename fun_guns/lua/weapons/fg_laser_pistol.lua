@@ -4,20 +4,8 @@ local base_class = fg_base.SetupSWEP(SWEP, "Laser Pistol")
 
 SWEP.PrimaryFireInterval = 2
 
-function SWEP:PostInitialize()
-	self:SetHoldType("pistol")
-end
-
-function SWEP.IgniteCallback(target)
-	if target:IsWeapon() then return end -- Don't engulf them
-	if isnumber(target:ViewModelIndex()) then return end
-	if target:GetClass() == "gmod_hands" then return end
-
-	target:Ignite(5, 30)
-end
-
-function SWEP:DoPrimaryAttack()
-	local tr = self:RunTrace()
+function SWEP:PostEntityFireBullets(entity, data)
+	local tr = data.Trace
 
 	if tr.Hit then
 		local effect_data = EffectData()
@@ -33,7 +21,25 @@ function SWEP:DoPrimaryAttack()
 			fg_base.ForEntitiesInRadius(tr.HitPos, 50, self.IgniteCallback)
 		end
 	end
+end
 
+function SWEP:PostInitialize()
+	self:SetHoldType("pistol")
+
+	if CLIENT then
+		hook.Add("PostEntityFireBullets", self, self.PostEntityFireBullets)
+	end
+end
+
+function SWEP.IgniteCallback(target)
+	if target:IsWeapon() then return end -- Don't engulf them
+	if isnumber(target:ViewModelIndex()) then return end
+	if target:GetClass() == "gmod_hands" then return end
+
+	target:Ignite(5, 30)
+end
+
+function SWEP:DoPrimaryAttack()
 	self:FireBullet(nil, nil, vector_origin, 1234)
 	self:TakePrimaryAmmo(1)
 	self:SetNextPrimaryFire(self:GetNextPrimaryFireTime())
