@@ -31,7 +31,7 @@ function SWEP:PostInitialize()
 
 	self:SetHoldType("shotgun")
 
-	self.ReloadState = fg_base.RELOAD_STATE_FINISHED
+	self:SetReloadState(fg_base.RELOAD_STATE_FINISHED)
 end
 
 function SWEP:GetReloadState()
