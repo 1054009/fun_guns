@@ -42,6 +42,36 @@ function SWEP:SetReloadState(state)
 	self.ReloadState = tonumber(state) or fg_base.RELOAD_STATE_FINISHED
 end
 
+function SWEP:CanReload()
+	return self:GetReloadState() == fg_base.RELOAD_STATE_FINISHED
+end
+
+function SWEP:Reload()
+	if not IsFirstTimePredicted() then return end
+	if not self:CanReload() then return end
+
+	local owner = self:GetOwner()
+	if IsValid(owner) then
+		owner:SetAnimation(PLAYER_RELOAD)
+	end
+
+	-- Don't send the reload animation for the viewmodel
+	-- That will be fired in ProcessReload
+
+	self:DoReload()
+end
+
+function SWEP:DoReload()
+	if not self:HasAmmo() then return end -- All gone!
+	if CurTime() < self:GetNextPrimaryFire() then return end
+
+	if self:GetReserveAmmo(self:GetPrimaryAmmoType()) <= 0 then -- Out of reserve ammo
+		return
+	end
+
+	self:StartReload()
+end
+
 function SWEP:StartReload()
 	self:SetReloadState(fg_base.RELOAD_STATE_START)
 
@@ -51,20 +81,7 @@ function SWEP:StartReload()
 	self:SetNextPrimaryFire(CurTime() + self:SequenceDuration())
 end
 
-function SWEP:Reload()
-	if not self:HasAmmo() then return end -- All gone!
-	if CurTime() < self:GetNextPrimaryFire() then return end
-
-	if self:GetReserveAmmo(self:GetPrimaryAmmoType()) <= 0 then -- Out of reserve ammo
-		return
-	end
-
-	if self:GetReloadState() == fg_base.RELOAD_STATE_FINISHED then
-		self:StartReload()
-	end
-end
-
-function SWEP:DoReload()
+function SWEP:ProcessReload()
 	if self:GetReloadState() ~= fg_base.RELOAD_STATE_ONGOING then
 		return
 	end
@@ -73,8 +90,6 @@ function SWEP:DoReload()
 	if not IsValid(owner) then
 		return self:FinishReload()
 	end
-
-	owner:SetAnimation(PLAYER_RELOAD)
 
 	if self:GetReserveAmmo(self:GetPrimaryAmmoType()) <= 0 or self:Clip1() >= self:GetMaxClip1() then
 		return self:FinishReload()
@@ -113,6 +128,6 @@ function SWEP:OnThink()
 			self:SetReloadState(fg_base.RELOAD_STATE_ONGOING)
 		end
 
-		return self:DoReload()
+		return self:ProcessReload()
 	end
 end
