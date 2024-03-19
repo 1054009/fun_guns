@@ -22,7 +22,7 @@ function SWEP:PrimaryAttack()
 		util.Effect("laser", effect_data)
 	end
 
-	self:FireBullet(nil, nil, vector_origin, 100)
+	self:FireBullet(nil, nil, vector_origin, 1234)
 	self:TakePrimaryAmmo(1)
 	self:SetNextPrimaryFire(self:GetNextPrimaryFireTime())
 end
