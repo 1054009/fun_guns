@@ -2,7 +2,7 @@ SWEP.Base = "fg_laser_pistol"
 
 local base_class = fg_base.SetupSWEP(SWEP, "Laser SMG")
 
-SWEP.ViewModel = "models/weapons/v_smg1.mdl"
+SWEP.ViewModel = "models/weapons/c_smg1.mdl"
 
 SWEP.WorldModel = "models/weapons/w_smg1.mdl"
 

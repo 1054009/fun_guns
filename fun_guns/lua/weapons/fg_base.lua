@@ -20,7 +20,7 @@ SWEP.Purpose = "Fun Guns"
 
 SWEP.Instructions = "Point and click"
 
-SWEP.ViewModel = "models/weapons/v_pistol.mdl"
+SWEP.ViewModel = "models/weapons/c_pistol.mdl"
 
 SWEP.ViewModelFOV = 62
 
@@ -59,6 +59,8 @@ SWEP.Secondary.Automatic = false
 SWEP.Secondary.Damage = 1
 
 SWEP.Secondary.Spread = 1
+
+SWEP.UseHands = true
 
 SWEP.DisableDuplicator = false
 
