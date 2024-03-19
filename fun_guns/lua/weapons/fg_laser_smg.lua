@@ -18,7 +18,7 @@ SWEP.Primary.Damage = 80
 
 SWEP.Primary.Spread = 0.2
 
-SWEP.Primary.VerticalViewPunch = 2
+SWEP.Primary.VerticalViewPunch = 1
 
 SWEP.Primary.HorizontalViewPunch = { -1, 1 }
 
