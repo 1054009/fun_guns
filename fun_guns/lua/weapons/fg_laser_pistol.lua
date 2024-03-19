@@ -2,6 +2,12 @@ SWEP.Base = "fg_base"
 
 local base_class = fg_base.SetupSWEP(SWEP, "Laser Pistol")
 
+SWEP.Primary.ClipSize = 18
+
+SWEP.Primary.DefaultClip = 18
+
+SWEP.Primary.Damage = 1234
+
 SWEP.PrimaryFireInterval = 2
 
 function SWEP:PostEntityFireBullets(entity, data)
@@ -40,7 +46,7 @@ function SWEP.IgniteCallback(target)
 end
 
 function SWEP:DoPrimaryAttack()
-	self:FireBullet(nil, nil, vector_origin, 1234)
+	self:FireBullet(nil, nil, vector_origin)
 	self:TakePrimaryAmmo(1)
 	self:SetNextPrimaryFire(self:GetNextPrimaryFireTime())
 
