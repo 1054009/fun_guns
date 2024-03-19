@@ -74,8 +74,6 @@ SWEP.UsesSecondaryAmmo = false
 
 SWEP.BulletDistance = 56756
 
-SWEP.BulletSpread = 1
-
 AccessorFunc(SWEP, "m_iUnsharedSeed", "UnsharedSeed", FORCE_NUMBER)
 
 SWEP.Bullet = {}
@@ -219,28 +217,24 @@ function SWEP:GetCurrentFireMode()
 	end
 end
 
-function SWEP:GetCurrentAmmoType()
+function SWEP:ReturnFireMode(primary, secondary, default)
 	local fire_mode = self:GetCurrentFireMode()
 
 	if fire_mode == self.FIRE_MODE_PRIMARY then
-		return self:GetPrimaryAmmoType()
+		return primary
 	elseif fire_mode == self.FIRE_MODE_SECONDARY then
-		return self:GetSecondaryAmmoType()
+		return secondary
 	else
-		return -1
+		return default
 	end
 end
 
-function SWEP:GetCurrentFireTable()
-	local fire_mode = self:GetCurrentFireMode()
+function SWEP:GetCurrentAmmoType()
+	return self:ReturnFireMode(self:GetPrimaryAmmoType(), self:GetSecondaryAmmoType(), -1)
+end
 
-	if fire_mode == self.FIRE_MODE_PRIMARY then
-		return self.Primary
-	elseif fire_mode == self.FIRE_MODE_SECONDARY then
-		return self.Secondary
-	else
-		return nil
-	end
+function SWEP:GetCurrentFireTable()
+	return self:ReturnFireMode(self.Primary, self.Secondary, nil)
 end
 
 function SWEP:EmptyTraceFilter() -- Faster than table.Empty
