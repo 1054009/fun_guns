@@ -64,7 +64,7 @@ SWEP.SecondaryFireInterval = 0.1
 
 SWEP.UsesSecondaryAmmo = false
 
-SWEP.BulletDistance = 32767
+SWEP.BulletDistance = 56756
 
 --[[
 	Global functions
