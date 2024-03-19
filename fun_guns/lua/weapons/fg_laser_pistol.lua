@@ -6,7 +6,7 @@ SWEP.Primary.ClipSize = 18
 
 SWEP.Primary.DefaultClip = 18
 
-SWEP.Primary.Damage = 1234
+SWEP.Primary.Damage = 75
 
 SWEP.Primary.Spread = 0
 
