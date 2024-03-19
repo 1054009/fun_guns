@@ -104,6 +104,14 @@ function SWEP:Initialize()
 		self:SetUnsharedSeed(tonumber(util.CRC(tostring({}))))
 	end
 
+	if CLIENT then
+		local viewmodel_fov = GetConVar("viewmodel_fov")
+
+		if viewmodel_fov then
+			self.ViewModelFOV = viewmodel_fov:GetInt()
+		end
+	end
+
 	self:PostInitialize()
 end
 
