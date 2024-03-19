@@ -16,6 +16,10 @@ function SWEP:PostEntityFireBullets(entity, data)
 	local tr = data.Trace
 
 	if tr.Hit then
+		local owner = self:GetOwner()
+		if not IsValid(owner) then return end
+		if entity ~= owner or owner:GetActiveWeapon() ~= self then return end
+
 		local effect_data = EffectData()
 
 		effect_data:SetStart(tr.StartPos)
