@@ -261,7 +261,7 @@ function SWEP:RunTrace(end_position)
 	end
 
 	if not isvector(end_position) then
-		local forward = owner:EyeAngles():Forward()
+		local forward = owner:GetForward()
 
 		forward:Mul(self.BulletDistance)
 		forward:Add(self:GetPos())
