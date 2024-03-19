@@ -66,6 +66,12 @@ SWEP.UsesSecondaryAmmo = false
 
 SWEP.BulletDistance = 56756
 
+SWEP.BulletSpread = 1
+
+AccessorFunc(SWEP, "m_iUnsharedSeed", "UnsharedSeed", FORCE_NUMBER)
+
+SWEP.Bullet = {}
+
 --[[
 	Global functions
 ]]
@@ -80,6 +86,11 @@ function SWEP:Initialize()
 	self.TraceData.maxs = Vector(1, 1, 1)
 	self.TraceData.mask = MASK_SHOT
 	self.TraceData.filter = {}
+
+	if CLIENT then
+		-- Unshared seed isn't networked, obviously
+		self:SetUnsharedSeed(tonumber(util.CRC(tostring({}))))
+	end
 
 	self:PostInitialize()
 end
@@ -189,6 +200,34 @@ function SWEP:RunTrace(end_position)
 	util.TraceHull(self.TraceData)
 
 	return self.TraceResult
+end
+
+function SWEP:RandomBulletSpread()
+	math.randomseed(self:GetUnsharedSeed())
+
+	local x = math.Rand(-self.BulletSpread, self.BulletSpread)
+	local y = math.Rand(-self.BulletSpread, self.BulletSpread)
+	local z = math.Rand(-self.BulletSpread, self.BulletSpread)
+
+	return Vector(x, y, z)
+end
+
+function SWEP:FireBullet(amount, direction, spread, damage, ammo_type)
+	local owner = self:GetOwner()
+	local bullet = self.Bullet
+
+	bullet.Num = tonumber(amount) or 1
+	bullet.Src = owner:EyePos()
+	bullet.Dir = isvector(direction) and direction or owner:GetForward()
+	bullet.Spread = isvector(spread) and spread or self:RandomBulletSpread()
+	bullet.Damage = tonumber(damage) or 10
+	bullet.Force = bullet.Damage * 0.5
+	bullet.AmmoType = isnumber(ammo_type) and ammo_type or self:GetPrimaryAmmoType()
+	bullet.IgnoreEntity = owner
+
+	owner:LagCompensation(true)
+		owner:FireBullets(bullet)
+	owner:LagCompensation(false)
 end
 
 --[[
