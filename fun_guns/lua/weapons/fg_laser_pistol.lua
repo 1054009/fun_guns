@@ -8,7 +8,7 @@ SWEP.Primary.DefaultClip = 18
 
 SWEP.Primary.Damage = 50
 
-SWEP.Primary.Spread = 0
+SWEP.Primary.Spread = 0.1
 
 SWEP.PrimaryFireInterval = 0.2
 
