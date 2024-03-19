@@ -290,10 +290,7 @@ function SWEP:RandomBulletSpread(fire_table)
 	local x = math.Rand(0, fire_table.Spread)
 	local y = math.Rand(0, fire_table.Spread)
 
-	local spread = Vector(x, y)
-	spread:Normalize()
-
-	return spread
+	return Vector(x, y)
 end
 
 function SWEP:FireBullet(amount, direction, spread, damage, ammo_type)
