@@ -2,6 +2,8 @@ SWEP.Base = "fg_base"
 
 local base_class = fg_base.SetupSWEP(SWEP, "Laser Pistol")
 
+SWEP.PrimaryFireInterval = 2
+
 function SWEP:PostInitialize()
 	self:SetHoldType("pistol")
 end
