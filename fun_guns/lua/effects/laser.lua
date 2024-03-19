@@ -1,3 +1,7 @@
+--[[
+	 Optimized ToolTracer effect
+]]
+
 EFFECT.Material = Material("effects/tool_tracer")
 
 function EFFECT:Init(effect_data)
