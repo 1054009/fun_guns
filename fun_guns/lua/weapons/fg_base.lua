@@ -50,6 +50,8 @@ SWEP.Primary.VerticalViewPunch = 1
 
 SWEP.Primary.HorizontalViewPunch = 1
 
+SWEP.Primary.Enabled = true
+
 if not istable(SWEP.Secondary) then
 	SWEP.Secondary = {}
 end
@@ -71,6 +73,8 @@ SWEP.Secondary.Spread = 1
 SWEP.Secondary.VerticalViewPunch = 1
 
 SWEP.Secondary.HorizontalViewPunch = 1
+
+SWEP.Secondary.Enabled = false
 
 SWEP.UseHands = true
 
@@ -219,8 +223,20 @@ function SWEP:GetReserveAmmo(ammo_type)
 	return owner:GetAmmoCount(ammo_type)
 end
 
+function SWEP:PrimaryAttackEnabled()
+	return self.Primary.Enabled
+end
+
+function SWEP:SecondaryAttackEnabled()
+	return self.Secondary.Enabled
+end
+
 function SWEP:CanPrimaryAttack()
 	if not IsFirstTimePredicted() then
+		return false
+	end
+
+	if not self:PrimaryAttackEnabled() then
 		return false
 	end
 
@@ -237,6 +253,10 @@ end
 
 function SWEP:CanSecondaryAttack()
 	if not IsFirstTimePredicted() then
+		return false
+	end
+
+	if not self:SecondaryAttackEnabled() then
 		return false
 	end
 
