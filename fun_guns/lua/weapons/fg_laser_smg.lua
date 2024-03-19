@@ -12,7 +12,7 @@ SWEP.Primary.DefaultClip = 45
 
 SWEP.Primary.Automatic = true
 
-SWEP.Primary.Damage = 32
+SWEP.Primary.Damage = 80
 
 SWEP.Primary.Spread = 0.2
 
