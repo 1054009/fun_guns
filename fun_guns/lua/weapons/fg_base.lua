@@ -182,7 +182,7 @@ function SWEP:TakeAmmo(amount, ammo_type)
 
 	amount = tonumber(amount) or 0
 
-	if owner:IsPlayer() and amount < 0 then
+	if owner:IsPlayer() and amount < 0 then -- If we try to take a negative amount of ammo, try to take ammo from the reserve
 		ammo_type = ammo_type or self:GetCurrentAmmoType()
 		local magazine = self:GetReserveAmmo(ammo_type)
 
