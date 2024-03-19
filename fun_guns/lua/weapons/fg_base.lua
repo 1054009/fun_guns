@@ -201,6 +201,10 @@ function SWEP:TakeAmmo(amount, ammo_type)
 	take_function(self, amount)
 end
 
+function SWEP:GetClipAmmo(ammo_type)
+	return self:ReturnAmmoType(ammo_type, self:Clip1(), self:Clip2(), 0)
+end
+
 function SWEP:GetReserveAmmo(ammo_type)
 	local owner = self:GetOwner()
 	if not IsValid(owner) or not owner:IsPlayer() then
@@ -224,7 +228,7 @@ function SWEP:CanPrimaryAttack()
 		return false
 	end
 
-	if self:GetUsesPrimaryAmmo() and self:Clip1() <= 0 then
+	if self:GetUsesPrimaryAmmo() and self:GetClipAmmo(self:GetPrimaryAmmoType()) <= 0 then
 		return false
 	end
 
@@ -240,7 +244,7 @@ function SWEP:CanSecondaryAttack()
 		return false
 	end
 
-	if self:GetUsesSecondaryAmmo() and self:Clip2() <= 0 then
+	if self:GetUsesSecondaryAmmo() and self:GetClipAmmo(self:GetSecondaryAmmoType()) <= 0 then
 		return false
 	end
 
