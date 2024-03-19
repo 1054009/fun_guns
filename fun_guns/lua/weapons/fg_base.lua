@@ -285,6 +285,10 @@ function SWEP:PrimaryAttack()
 			local owner = self:GetOwner()
 			if IsValid(owner) then
 				owner:SetAnimation(PLAYER_ATTACK1)
+
+				if owner:IsPlayer() then
+					owner:ViewPunch(self:CalculateViewPunch())
+				end
 			end
 		end
 	self.m_bInPrimaryAttack = false

@@ -50,23 +50,17 @@ function SWEP.IgniteCallback(target)
 end
 
 function SWEP:DoPrimaryAttack()
-	local owner = self:GetOwner()
-
 	if SERVER then
 		local tr = self:RunTrace()
 
 		if tr.Hit then
-			fg_base.ForEntitiesInRadius(tr.HitPos, 50, self.IgniteCallback, owner)
+			fg_base.ForEntitiesInRadius(tr.HitPos, 50, self.IgniteCallback, self:GetOwner())
 		end
 	end
 
 	self:FireBullet()
 	self:TakeAmmo(1)
 	self:SetNextPrimaryFire(self:GetNextPrimaryFireTime())
-
-	if IsValid(owner) and owner:IsPlayer() then
-		owner:ViewPunch(self:CalculateViewPunch())
-	end
 
 	return true
 end
