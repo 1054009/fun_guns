@@ -125,11 +125,15 @@ function SWEP:PostInitialize()
 end
 
 function SWEP:Think()
-	return self:OnThink()
+	local result = self:OnThink()
+
+	if result == true then
+		return true
+	end
 end
 
 function SWEP:OnThink()
-	return false
+
 end
 
 function SWEP:OnRemove()
@@ -158,6 +162,20 @@ end
 
 function SWEP:SetUsesSecondaryAmmo(state)
 	self.UsesSecondaryAmmo = tobool(state)
+end
+
+function SWEP:GetReserveAmmo(ammo_type)
+	local owner = self:GetOwner()
+	if not IsValid(owner) or not owner:IsPlayer() then
+		return 9999
+	end
+
+	ammo_type = self:ReturnAmmoType(ammo_type, self:GetPrimaryAmmoType(), self:GetSecondaryAmmoType(), -1)
+	if ammo_type == -1 then
+		return 0
+	end
+
+	return owner:GetAmmoCount(ammo_type)
 end
 
 function SWEP:CanPrimaryAttack()
@@ -266,6 +284,16 @@ end
 
 function SWEP:GetCurrentFireTable()
 	return self:ReturnFireMode(self.Primary, self.Secondary, nil)
+end
+
+function SWEP:ReturnAmmoType(ammo_type, primary, secondary, default)
+	if ammo_type == self:GetPrimaryAmmoType() then
+		return primary
+	elseif ammo_type == self:GetSecondaryAmmoType() then
+		return seconary
+	else
+		return default
+	end
 end
 
 function SWEP:EmptyTraceFilter() -- Faster than table.Empty

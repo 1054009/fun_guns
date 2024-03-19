@@ -61,7 +61,7 @@ function SWEP:DoPrimaryAttack()
 	end
 
 	self:FireBullet()
-	self:TakePrimaryAmmo(1)
+	self:TakeAmmo(1)
 	self:SetNextPrimaryFire(self:GetNextPrimaryFireTime())
 
 	if IsValid(owner) and owner:IsPlayer() then
