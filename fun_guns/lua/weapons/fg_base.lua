@@ -193,6 +193,11 @@ function SWEP:PrimaryAttack()
 	self.m_bInPrimaryAttack = true
 		if self:DoPrimaryAttack() then
 			self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+
+			local owner = self:GetOwner()
+			if IsValid(owner) then
+				owner:SetAnimation(PLAYER_ATTACK1)
+			end
 		end
 	self.m_bInPrimaryAttack = false
 end
@@ -211,6 +216,11 @@ function SWEP:SecondaryAttack()
 	self.m_bInSecondaryAttack = true
 		if self:DoSecondaryAttack() then
 			self:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
+
+			local owner = self:GetOwner()
+			if IsValid(owner) then
+				owner:SetAnimation(PLAYER_ATTACK1)
+			end
 		end
 	self.m_bInSecondaryAttack = false
 end
