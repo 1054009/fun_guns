@@ -497,6 +497,12 @@ fg_base.RELOAD_STATE_ONGOING = 1
 
 fg_base.RELOAD_STATE_FINISHED = 3
 
+fg_base.ATTACK_STATE_START = 0
+
+fg_base.ATTACK_STATE_ONGOING = 1
+
+fg_base.ATTACK_STATE_FINISHED = 2
+
 function fg_base.SetupSWEP(swep, name)
 	swep.Category = "Fun Guns"
 
