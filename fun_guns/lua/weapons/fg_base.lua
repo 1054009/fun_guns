@@ -346,7 +346,7 @@ function fg_base.SetupSWEP(swep, name)
 
 	swep.PrintName = name
 
-	return baseclass.Get("fg_base")
+	return baseclass.Get(swep.Base)
 end
 
 function fg_base.ForEntitiesInRadius(origin, radius, callback)
