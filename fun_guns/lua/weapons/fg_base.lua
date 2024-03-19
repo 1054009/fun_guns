@@ -471,6 +471,18 @@ function SWEP:CalculateViewPunch()
 	return Angle(-vertical_punch, horizontal_punch)
 end
 
+function SWEP:SetNextThinkTime(time)
+	self:NextThink(time)
+
+	if CLIENT then
+		self:SetNextClientThink(time)
+	end
+
+	-- https://github.com/Facepunch/garrysmod-issues/issues/3269
+	self:SetNextPrimaryFire(time)
+	self:SetNextSecondaryFire(time)
+end
+
 --[[
 	Helper functions
 ]]

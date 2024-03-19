@@ -78,19 +78,13 @@ function SWEP:DoReload()
 		return self:FinishReload()
 	end
 
-	-- https://github.com/Facepunch/garrysmod-issues/issues/3269
 	if CurTime() < self:GetNextPrimaryFire() then return end
 
 	self:TakeAmmo(-1, self:GetPrimaryAmmoType())
 
 	self:SendWeaponAnim(ACT_VM_RELOAD)
-	self:SetNextPrimaryFire(CurTime() + self:SequenceDuration())
 
-	self:NextThink(self:GetNextPrimaryFire())
-
-	if CLIENT then
-		self:SetNextClientThink(self:GetNextPrimaryFire())
-	end
+	self:SetNextThinkTime(CurTime() + self:SequenceDuration())
 
 	return true
 end
