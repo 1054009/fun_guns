@@ -40,6 +40,8 @@ SWEP.Primary.Automatic = false
 
 SWEP.Primary.Damage = 1
 
+SWEP.Primary.Spread = 1
+
 if not istable(SWEP.Secondary) then
 	SWEP.Secondary = {}
 end
@@ -53,6 +55,8 @@ SWEP.Secondary.DefaultClip = 0
 SWEP.Secondary.Automatic = false
 
 SWEP.Secondary.Damage = 1
+
+SWEP.Secondary.Spread = 1
 
 SWEP.DisableDuplicator = false
 
@@ -75,6 +79,12 @@ SWEP.BulletSpread = 1
 AccessorFunc(SWEP, "m_iUnsharedSeed", "UnsharedSeed", FORCE_NUMBER)
 
 SWEP.Bullet = {}
+
+SWEP.FIRE_MODE_NONE = 0
+
+SWEP.FIRE_MODE_PRIMARY = 1
+
+SWEP.FIRE_MODE_SECONDARY = 2
 
 --[[
 	Global functions
@@ -199,13 +209,37 @@ function SWEP:DoSecondaryAttack()
 	return false
 end
 
-function SWEP:GetCurrentAmmoType()
+function SWEP:GetCurrentFireMode()
 	if self.m_bInPrimaryAttack then
-		return self:GetPrimaryAmmoType()
+		return self.FIRE_MODE_PRIMARY
 	elseif self.m_bInSecondaryAttack then
+		return self.FIRE_MODE_SECONDARY
+	else
+		return self.FIRE_MODE_NONE
+	end
+end
+
+function SWEP:GetCurrentAmmoType()
+	local fire_mode = self:GetCurrentFireMode()
+
+	if fire_mode == self.FIRE_MODE_PRIMARY then
+		return self:GetPrimaryAmmoType()
+	elseif fire_mode == self.FIRE_MODE_SECONDARY then
 		return self:GetSecondaryAmmoType()
 	else
 		return -1
+	end
+end
+
+function SWEP:GetCurrentFireTable()
+	local fire_mode = self:GetCurrentFireMode()
+
+	if fire_mode == self.FIRE_MODE_PRIMARY then
+		return self.Primary
+	elseif fire_mode == self.FIRE_MODE_SECONDARY then
+		return self.Secondary
+	else
+		return nil
 	end
 end
 
@@ -221,6 +255,10 @@ end
 
 function SWEP:RunTrace(end_position)
 	local owner = self:GetOwner()
+	if not IsValid(owner) then
+		ErrorNoHaltWithStack("Tried to trace with no owner!")
+		return {}
+	end
 
 	if not isvector(end_position) then
 		local forward = owner:EyeAngles():Forward()
@@ -244,25 +282,46 @@ function SWEP:RunTrace(end_position)
 	return self.TraceResult
 end
 
-function SWEP:RandomBulletSpread()
-	math.randomseed(self:GetUnsharedSeed())
+function SWEP:RandomBulletSpread(fire_table)
+	if not istable(fire_table) then
+		fire_table = self:GetCurrentFireTable()
 
-	local x = math.Rand(-self.BulletSpread, self.BulletSpread)
-	local y = math.Rand(-self.BulletSpread, self.BulletSpread)
-	local z = math.Rand(-self.BulletSpread, self.BulletSpread)
+		if not istable(fire_table) then
+			return Vector()
+		end
+	end
 
-	return Vector(x, y, z)
+	math.randomseed(UnPredictedCurTime() + self:GetUnsharedSeed())
+
+	local x = math.Rand(0, fire_table.Spread)
+	local y = math.Rand(0, fire_table.Spread)
+
+	local spread = Vector(x, y)
+	spread:Normalize()
+
+	return spread
 end
 
 function SWEP:FireBullet(amount, direction, spread, damage, ammo_type)
 	local owner = self:GetOwner()
+	if not IsValid(owner) then
+		error("Tried to shoot with no owner!")
+		return
+	end
+
+	local fire_table = self:GetCurrentFireTable()
+	if not istable(fire_table) then
+		error("Tried to shoot outside of an attack function!")
+		return
+	end
+
 	local bullet = self.Bullet
 
 	bullet.Num = tonumber(amount) or 1
 	bullet.Src = owner:EyePos()
 	bullet.Dir = isvector(direction) and direction or owner:GetForward()
 	bullet.Spread = isvector(spread) and spread or self:RandomBulletSpread()
-	bullet.Damage = tonumber(damage) or self.Primary.Damage
+	bullet.Damage = tonumber(damage) or fire_table.Damage
 	bullet.Force = bullet.Damage * 0.5
 	bullet.AmmoType = isnumber(ammo_type) and ammo_type or self:GetCurrentAmmoType()
 	bullet.IgnoreEntity = owner
