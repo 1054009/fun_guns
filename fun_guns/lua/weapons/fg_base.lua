@@ -91,8 +91,8 @@ function SWEP:Initialize()
 	self.TraceData.mask = MASK_SHOT
 	self.TraceData.filter = {}
 
-	if CLIENT then
-		-- Unshared seed isn't networked, obviously
+	if not isnumber(self:GetUnsharedSeed()) then
+		-- Fix it!
 		self:SetUnsharedSeed(tonumber(util.CRC(tostring({}))))
 	end
 
