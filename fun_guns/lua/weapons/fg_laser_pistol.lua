@@ -24,10 +24,6 @@ function SWEP:PostEntityFireBullets(entity, data)
 		effect_data:SetOrigin(tr.HitPos)
 
 		util.Effect("laser", effect_data)
-
-		if SERVER then
-			fg_base.ForEntitiesInRadius(tr.HitPos, 50, self.IgniteCallback)
-		end
 	end
 end
 
@@ -48,6 +44,14 @@ function SWEP.IgniteCallback(target)
 end
 
 function SWEP:DoPrimaryAttack()
+	if SERVER then
+		local tr = self:RunTrace()
+
+		if tr.Hit then
+			fg_base.ForEntitiesInRadius(tr.HitPos, 50, self.IgniteCallback)
+		end
+	end
+
 	self:FireBullet()
 	self:TakePrimaryAmmo(1)
 	self:SetNextPrimaryFire(self:GetNextPrimaryFireTime())
