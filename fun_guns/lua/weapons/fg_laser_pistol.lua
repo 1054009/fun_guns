@@ -10,7 +10,7 @@ SWEP.Primary.Damage = 75
 
 SWEP.Primary.Spread = 0
 
-SWEP.PrimaryFireInterval = 2
+SWEP.PrimaryFireInterval = 0.2
 
 function SWEP:PostEntityFireBullets(entity, data)
 	local tr = data.Trace
