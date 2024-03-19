@@ -92,12 +92,6 @@ SWEP.BulletDistance = 56756
 
 SWEP.Bullet = {}
 
-SWEP.FIRE_MODE_NONE = 0
-
-SWEP.FIRE_MODE_PRIMARY = 1
-
-SWEP.FIRE_MODE_SECONDARY = 2
-
 --[[
 	Global functions
 ]]
@@ -238,20 +232,20 @@ end
 
 function SWEP:GetCurrentFireMode()
 	if self.m_bInPrimaryAttack then
-		return self.FIRE_MODE_PRIMARY
+		return fg_base.FIRE_MODE_PRIMARY
 	elseif self.m_bInSecondaryAttack then
-		return self.FIRE_MODE_SECONDARY
+		return fg_base.FIRE_MODE_SECONDARY
 	else
-		return self.FIRE_MODE_NONE
+		return fg_base.FIRE_MODE_NONE
 	end
 end
 
 function SWEP:ReturnFireMode(primary, secondary, default)
 	local fire_mode = self:GetCurrentFireMode()
 
-	if fire_mode == self.FIRE_MODE_PRIMARY then
+	if fire_mode == fg_base.FIRE_MODE_PRIMARY then
 		return primary
-	elseif fire_mode == self.FIRE_MODE_SECONDARY then
+	elseif fire_mode == fg_base.FIRE_MODE_SECONDARY then
 		return secondary
 	else
 		return default
@@ -393,6 +387,18 @@ fg_base.DontIgniteClasses = {
 	["predicted_viewmodel"] = true,
 	["viewmodel"] = true
 }
+
+fg_base.FIRE_MODE_NONE = 0
+
+fg_base.FIRE_MODE_PRIMARY = 1
+
+fg_base.FIRE_MODE_SECONDARY = 2
+
+fg_base.RELOAD_STATE_START = 0
+
+fg_base.RELOAD_STATE_ONGOING = 1
+
+fg_base.RELOAD_STATE_FINISHED = 3
 
 function fg_base.SetupSWEP(swep, name)
 	swep.Category = "Fun Guns"
