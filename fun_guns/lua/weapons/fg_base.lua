@@ -78,8 +78,6 @@ SWEP.UsesSecondaryAmmo = false
 
 SWEP.BulletDistance = 56756
 
-AccessorFunc(SWEP, "m_iUnsharedSeed", "UnsharedSeed", FORCE_NUMBER)
-
 SWEP.Bullet = {}
 
 SWEP.FIRE_MODE_NONE = 0
@@ -103,10 +101,7 @@ function SWEP:Initialize()
 	self.TraceData.mask = MASK_SHOT
 	self.TraceData.filter = {}
 
-	if not isnumber(self:GetUnsharedSeed()) then
-		-- Fix it!
-		self:SetUnsharedSeed(tonumber(util.CRC(tostring({}))))
-	end
+	self.m_iSpreadSeed = tonumber(util.CRC(tostring({})))
 
 	if CLIENT then
 		local viewmodel_fov = GetConVar("viewmodel_fov")
@@ -298,6 +293,10 @@ function SWEP:RunTrace(end_position)
 	return self.TraceResult
 end
 
+function SWEP:GetSpreadSeed()
+	return self.m_iSpreadSeed
+end
+
 function SWEP:RandomBulletSpread(fire_table)
 	if not istable(fire_table) then
 		fire_table = self:GetCurrentFireTable()
@@ -307,7 +306,7 @@ function SWEP:RandomBulletSpread(fire_table)
 		end
 	end
 
-	math.randomseed(UnPredictedCurTime() + self:GetUnsharedSeed())
+	math.randomseed(UnPredictedCurTime() + self:GetSpreadSeed())
 
 	local x = math.Rand(0, fire_table.Spread)
 	local y = math.Rand(0, fire_table.Spread)
