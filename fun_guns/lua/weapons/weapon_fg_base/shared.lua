@@ -21,6 +21,8 @@ SWEP.UseHands = true
 include("sh_util.lua")
 include("sh_ammo.lua")
 
+AccessorFunc(SWEP, "m_iReloadAnimation", "ReloadAnimation", FORCE_NUMBER)
+
 --[[
 	Default ammo
 ]]
@@ -60,6 +62,7 @@ end
 
 function SWEP:Initialize()
 	self:SetRandomSeed(self:GetRandomCRC())
+	self:SetReloadAnimation(ACT_VM_RELOAD)
 
 	hook.Add("PostEntityFireBullets", self, function(self, entity, bullet_data)
 		if entity ~= self:GetOwner() then return end
@@ -84,7 +87,7 @@ end
 function SWEP:Reload()
 	if not self:CanReload() then return end
 
-	local success = self:DefaultReload(ACT_VM_RELOAD)
+	local success = self:DefaultReload(self:GetReloadAnimation())
 
 	if success then
 		self:TryOwner("SetAnimation", PLAYER_RELOAD)
