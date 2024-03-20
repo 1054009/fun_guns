@@ -162,9 +162,5 @@ function SWEP:SecondaryAttack()
 end
 
 function SWEP:CalcViewModelView()
-	local viewmodel_fov = GetConVar("viewmodel_fov")
-
-	if viewmodel_fov then
-		self.ViewModelFOV = viewmodel_fov:GetInt()
-	end
+	self.ViewModelFOV = self:GetConVarNumber("viewmodel_fov", 62)
 end

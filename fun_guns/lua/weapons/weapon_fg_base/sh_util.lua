@@ -377,3 +377,17 @@ function SWEP:ForEntityInArea(origin, radius, callback, ...)
 		callback(self, entity)
 	end
 end
+
+--[[
+	Kind of silly that GetConVarNumber was deprecated, it's pretty useful
+]]
+
+function SWEP:GetConVarNumber(name, default)
+	local convar = GetConVar(name)
+
+	if not convar then
+		return default
+	end
+
+	return convar:GetFloat()
+end
