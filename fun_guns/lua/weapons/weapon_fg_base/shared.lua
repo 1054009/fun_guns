@@ -109,7 +109,7 @@ function SWEP:CanPrimaryAttack()
 		return false
 	end
 
-	if self.Primary.UsesAmmo and self:Clip1() <= 0 then
+	if self.Primary.UsesAmmo and (not self:HasAmmo() or self:Clip1() <= 0) then
 		self:Reload()
 		return false
 	end
@@ -125,7 +125,12 @@ function SWEP:CanSecondaryAttack()
 		return false
 	end
 
-	if self.Secondary.UsesAmmo and self:Clip2() <= 0 then
+	local clip = self:Clip2()
+	if self:GetPrimaryAmmoType() == self:GetSecondaryAmmoType() then
+		clip = self:Clip1()
+	end
+
+	if self.Secondary.UsesAmmo and (not self:HasAmmo() or clip <= 0) then
 		return false
 	end
 
