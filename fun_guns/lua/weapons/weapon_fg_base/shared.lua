@@ -65,7 +65,11 @@ function SWEP:Initialize()
 	self:SetReloadAnimation(ACT_VM_RELOAD)
 
 	hook.Add("PostEntityFireBullets", self, function(self, entity, bullet_data)
-		if entity ~= self:GetOwner() then return end
+		local owner, active_weapon = self:TryOwner("GetActiveWeapon")
+
+		if not owner then return end
+		if entity ~= owner then return end
+		if active_weapon ~= self then return end
 
 		self:PostBulletFired(bullet_data)
 	end)
