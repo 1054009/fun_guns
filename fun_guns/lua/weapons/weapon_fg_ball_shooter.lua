@@ -24,6 +24,10 @@ SWEP:SetupAmmo("Primary",
 	Enabled = true
 })
 
+function SWEP:OnInitialize()
+	self:SetReloadAnimation(ACT_SHOTGUN_RELOAD_FINISH)
+end
+
 function SWEP:OnPrimaryAttack()
 	local sent_ball = scripted_ents.GetStored("sent_ball")
 	if not istable(sent_ball) then return false end -- Balls don't exist!
