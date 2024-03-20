@@ -220,6 +220,31 @@ function SWEP:CalculateBulletSpread(offset)
 	return Vector(x, y)
 end
 
+function SWEP:GenerateBullet(bullet_data, bullet_index)
+	local owner = self:TryOwner()
+	assert(owner, "Tried to use GenerateBullet with invalid owner")
+
+	local fire_table = self:GetCurrentFireTable()
+	assert(fire_table, "Tried to use GenerateBullet outside of fire event")
+
+	if not istable(bullet_data) then
+		bullet_data = {}
+	end
+
+	bullet_index = tonumber(bullet_index) or 1
+
+	bullet_data.Damage = fire_table.BulletDamage
+	bullet_data.Distance = fire_table.BulletDistance
+	bullet_data.Num = 1
+	bullet_data.AmmoType = fire_table.Ammo
+	bullet_data.Dir = owner:GetForward()
+	bullet_data.Src = owner:EyePos()
+	bullet_data.IgnoreEntity = owner
+	bullet_data.Spread = self:CalculateBulletSpread(bullet_index * math.pi)
+
+	return bullet_data
+end
+
 function SWEP:FireBullet()
 	local owner = self:TryOwner()
 	assert(owner, "Tried to use FireBullet with invalid owner")
@@ -229,17 +254,9 @@ function SWEP:FireBullet()
 
 	local bullet_data = {}
 
-	bullet_data.Damage = fire_table.BulletDamage
-	bullet_data.Distance = fire_table.BulletDistance
-	bullet_data.Num = 1
-	bullet_data.AmmoType = fire_table.Ammo
-	bullet_data.Dir = owner:GetForward()
-	bullet_data.Src = owner:EyePos()
-	bullet_data.IgnoreEntity = owner
-
 	owner:LagCompensation(true)
 		for bullet_index = 1, fire_table.BulletCount do
-			bullet_data.Spread = self:CalculateBulletSpread(bullet_index * math.pi)
+			self:GenerateBullet(bullet_data, bullet_index)
 
 			owner:FireBullets(bullet_data)
 		end
