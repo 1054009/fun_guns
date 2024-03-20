@@ -19,6 +19,7 @@ SWEP:SetupAmmo("Primary",
 	DefaultClip = 5,
 
 	BulletCount = 5, -- How many balls to spawn
+	BulletSpread = 10,
 	UsesAmmo = true,
 	Enabled = true
 })
@@ -41,11 +42,12 @@ function SWEP:OnPrimaryAttack()
 		for bullet_index = 1, self:GetCurrentFireTable().BulletCount do
 			self:GenerateBullet(bullet_data, bullet_index)
 
-			local start_pos = bullet_data.Src
+			local start_pos = bullet_data.Src -- It doesn't matter if we modify these vectors
 			local end_pos = bullet_data.Dir
 
-			end_pos:Mul(owner:BoundingRadius() * 5) -- It doesn't matter if we modify this vector
+			end_pos:Mul(owner:BoundingRadius() * 5)
 			end_pos:Add(start_pos)
+			end_pos:Add(bullet_data.Spread)
 
 			local tr = self:RunTrace(start_pos, end_pos)
 			tr.Hit = true -- Force the ball to spawn in front of us rather than on the ground
