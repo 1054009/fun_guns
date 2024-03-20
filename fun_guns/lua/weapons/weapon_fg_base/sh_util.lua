@@ -169,7 +169,7 @@ function SWEP:EmptyTraceFilter()
 	return filter
 end
 
-function SWEP:RunTrace()
+function SWEP:RunTrace(start_pos, end_pos)
 	local owner = self:TryOwner()
 	assert(owner, "Tried to use RunTrace with invalid owner")
 
@@ -177,14 +177,24 @@ function SWEP:RunTrace()
 	assert(fire_table, "Tried to use RunTrace outside of fire event")
 
 	local eye_pos = owner:EyePos()
-	local forward = owner:GetForward()
-	forward:Mul(fire_table.BulletDistance)
-	forward:Add(eye_pos)
+
+	if not isvector(start_pos) then
+		start_pos = eye_pos
+	end
+
+	if not isvector(end_pos) then
+		local forward = owner:GetForward()
+
+		forward:Mul(fire_table.BulletDistance)
+		forward:Add(eye_pos)
+
+		end_pos = forward
+	end
 
 	local td = self:GetSafeTraceData()
 
-	td.start = eye_pos
-	td.endpos = forward
+	td.start = start_pos
+	td.endpos = end_pos
 
 	local filter = self:EmptyTraceFilter()
 
